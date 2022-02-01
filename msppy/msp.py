@@ -575,10 +575,11 @@ class MSLP(object):
             m._set_up_CTG(discount=self.discount, bound=self.bound)
             m.update()
 
-    def _get_stage_cost(self, m, t):
+    def _get_stage_cost(self, m, t, with_ctg=False):
         if self.measure == "risk neutral":
             # the last stage model does not contain the cost-to-go function
-            if m.alpha is not None:
+            # TEMP: Allow more accurate cost modeling
+            if m.alpha is not None and not with_ctg:
                 return pow(self.discount,t) * (
                     m.objVal - self.discount*m.alpha.X
                 )

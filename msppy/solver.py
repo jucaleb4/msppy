@@ -159,7 +159,7 @@ class SDDP(object):
                     solution_dual[constr.constrName][t] = constr.PI
             if query_stage_cost:
                 stage_cost[t] = MSP._get_stage_cost(m, t)/pow(MSP.discount, t)
-            pv += MSP._get_stage_cost(m, t)
+            pv += MSP._get_stage_cost(m, t, with_ctg=t==self.forward_T-1)
             if markovian_idx is not None:
                 m._update_uncertainty_dependent(MSP.Markov_states[idx][markovian_idx[t]])
             if self.iteration != 0 and self.rgl_a != 0:
@@ -630,6 +630,7 @@ class SDDP(object):
                     m.write_infeasible_model(
                         "backward_" + str(m._model.modelName) + ".lp"
                     )
+                m.update()
                 db = m.objBound
                 self.db.append(db)
                 MSP.db = db
